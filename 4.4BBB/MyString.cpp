@@ -52,7 +52,7 @@ MyString& MyString::operator=(const MyString& other) {
 
 MyString& MyString::operator=(MyString&& other) {
     if (this != &other) {
-        free();
+        //free();
         moveFrom(std::move(other));
     }
     return *this;
@@ -108,26 +108,25 @@ MyString& MyString::operator--() {
 }
 
 MyString MyString::operator+(const MyString& other) const {
-    // Новая длина — максимум из двух строк
-    size_t newLength = (length < other.length) ? other.length : length;
-    char* newData = new char[newLength + 1]; // +1 для '\0'
 
-    for (size_t i = 0; i < newLength; ++i) {
-        // Если символы в позиции i разные или в первой строке его нет — берем из второй
-        if (i >= length || data[i] != other.data[i]) {
-            newData[i] = (i < other.length) ? other.data[i] : ' ';
-        }
-        // Иначе оставляем символ из первой строки
-        else {
-            newData[i] = data[i];
-        }
+    int sizemax = this->length > other.length ? this->length : other.length;
+    int sizemin = this->length < other.length ? this->length : other.length;
+    char* newstr = new char[sizemax];
+
+    for (int i = 0;i < sizemin;i++) {
+        newstr[i] = other.data[i];
     }
 
-    newData[newLength] = '\0';
-    MyString result(newData);
-    delete[] newData;
-    return result;
+    for (int i = sizemin;i < sizemax;i++)
+        newstr[i] = data[i];
+  
+    newstr[sizemax] = '\0';
+
+    MyString newmy(newstr);
+
+    return newmy;
 }
+
 
 std::ostream& operator<<(std::ostream& out, const MyString& str) {
     out << str.data;
