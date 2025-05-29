@@ -1,65 +1,104 @@
 #include "MyString.h"
 #include <iostream>
 #include <locale>
-#include <windows.h>
+#include <windows.h> 
+
+void clearInputBuffer() {
+    char c;
+    while (std::cin.get(c) && c != '\n');
+}
 
 void showMenu() {
-    std::cout << "\nÌåíþ:\n";
-    std::cout << "1. Ââåñòè ñòðîêó\n";
-    std::cout << "2. Âñòàâèòü ñèìâîë â ñòðîêó\n";
-    std::cout << "3. Óäàëèòü âåäóùèå ïðîáåëû\n";
-    std::cout << "4. Äîáàâèòü îòñóòñòâóþùèå ñèìâîëû èç âòîðîé ñòðîêè\n";
-    std::cout << "5. Ïîêàçàòü òåêóùóþ ñòðîêó\n";
-    std::cout << "0. Âûõîä\n";
-    std::cout << "Âàø âûáîð: ";
+    std::cout << "\nÐœÐµÐ½ÑŽ:\n";
+    std::cout << "1. Ð’Ð²ÐµÑÑ‚Ð¸ ÑÑ‚Ñ€Ð¾ÐºÑƒ\n";
+    std::cout << "2. Ð’ÑÑ‚Ð°Ð²Ð¸Ñ‚ÑŒ ÑÐ¸Ð¼Ð²Ð¾Ð» Ð² ÑÑ‚Ñ€Ð¾ÐºÑƒ\n";
+    std::cout << "3. Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ Ð²ÐµÐ´ÑƒÑ‰Ð¸Ðµ Ð¿Ñ€Ð¾Ð±ÐµÐ»Ñ‹\n";
+    std::cout << "4. Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ð²Ñ‚Ð¾Ñ€ÑƒÑŽ ÑÑ‚Ñ€Ð¾ÐºÑƒ Ðº Ñ‚ÐµÐºÑƒÑ‰ÐµÐ¹\n";
+    std::cout << "5. ÐŸÐ¾ÐºÐ°Ð·Ð°Ñ‚ÑŒ Ñ‚ÐµÐºÑƒÑ‰ÑƒÑŽ ÑÑ‚Ñ€Ð¾ÐºÑƒ\n";
+    std::cout << "0. Ð’Ñ‹Ñ…Ð¾Ð´\n";
+    std::cout << "Ð’Ð°Ñˆ Ð²Ñ‹Ð±Ð¾Ñ€: ";
 }
 
 int main() {
     setlocale(LC_ALL, "Russian");
 
     MyString str;
+    MyString second;
+
     int choice;
 
     do {
-        system("cls");
-        std::cout << "Òåêóùàÿ ñòðîêà: " << str << "\n";
+        std::cout << "Ð¢ÐµÐºÑƒÑ‰Ð°Ñ ÑÑ‚Ñ€Ð¾ÐºÐ°: \"" << str << "\"\n";
         showMenu();
         std::cin >> choice;
+
+        if (std::cin.fail()) {
+            std::cout << "ÐÐµÐºÐ¾Ñ€Ñ€ÐµÐºÑ‚Ð½Ñ‹Ð¹ Ð²Ð²Ð¾Ð´. ÐŸÐ¾Ð¶Ð°Ð»ÑƒÐ¹ÑÑ‚Ð°, Ð²Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ñ‡Ð¸ÑÐ»Ð¾.\n";
+            std::cin.clear();
+            clearInputBuffer();
+            Sleep(1000);
+            continue;
+        }
+        clearInputBuffer();
+
         switch (choice) {
         case 1: {
-            std::cout << "Ââåäèòå ñòðîêó: ";
-            std::cin >> str;
+            char buffer[8192]; 
+            std::cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÑÑ‚Ñ€Ð¾ÐºÑƒ: ";
+            std::cin.getline(buffer, sizeof(buffer));
+            str = MyString(buffer); 
+            std::cout << "Ð¡Ñ‚Ñ€Ð¾ÐºÐ° ÑƒÑÐ¿ÐµÑˆÐ½Ð¾ Ð²Ð²ÐµÐ´ÐµÐ½Ð°.\n";
             break;
         }
         case 2: {
             char ch;
             size_t pos;
-            std::cout << "Ââåäèòå ñèìâîë: ";
-            std::cin >> ch;
-            std::cout << "Ââåäèòå ïîçèöèþ äëÿ âñòàâêè: ";
-            std::cin >> pos;
-            str += std::make_pair(ch, pos);
+            std::cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÑÐ¸Ð¼Ð²Ð¾Ð» Ð´Ð»Ñ Ð²ÑÑ‚Ð°Ð²ÐºÐ¸ (Ð¾Ð´Ð¸Ð½ ÑÐ¸Ð¼Ð²Ð¾Ð»): ";
+            ch = std::cin.get();
+            clearInputBuffer();
+
+            bool validInput = false;
+            do {
+                std::cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð¿Ð¾Ð·Ð¸Ñ†Ð¸ÑŽ Ð´Ð»Ñ Ð²ÑÑ‚Ð°Ð²ÐºÐ¸ (0 Ð¸Ð»Ð¸ Ð±Ð¾Ð»ÑŒÑˆÐµ): ";
+                std::cin >> pos;
+                if (std::cin.fail()) {
+                    std::cout << "ÐÐµÐºÐ¾Ñ€Ñ€ÐµÐºÑ‚Ð½Ñ‹Ð¹ Ð²Ð²Ð¾Ð´. Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ñ†ÐµÐ»Ð¾Ðµ Ð½ÐµÐ¾Ñ‚Ñ€Ð¸Ñ†Ð°Ñ‚ÐµÐ»ÑŒÐ½Ð¾Ðµ Ñ‡Ð¸ÑÐ»Ð¾.\n";
+                    std::cin.clear();
+                    clearInputBuffer();
+                }
+                else {
+                    validInput = true;
+                }
+            } while (!validInput);
+            clearInputBuffer();
+
+            str += std::make_pair(ch, pos); 
+            std::cout << "Ð¡Ð¸Ð¼Ð²Ð¾Ð» '" << ch << "' Ð²ÑÑ‚Ð°Ð²Ð»ÐµÐ½ Ð½Ð° Ð¿Ð¾Ð·Ð¸Ñ†Ð¸ÑŽ " << pos << ".\n";
             break;
         }
         case 3:
             --str;
+            std::cout << "Ð’ÐµÐ´ÑƒÑ‰Ð¸Ðµ Ð¿Ñ€Ð¾Ð±ÐµÐ»Ñ‹ ÑƒÐ´Ð°Ð»ÐµÐ½Ñ‹.\n";
             break;
         case 4: {
-            std::cout << "Ââåäèòå âòîðóþ ñòðîêó: ";
-            MyString second;
-            std::cin >> second;
+            char buffer[8192];
+            std::cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð²Ñ‚Ð¾Ñ€ÑƒÑŽ ÑÑ‚Ñ€Ð¾ÐºÑƒ Ð´Ð»Ñ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ñ: ";
+            std::cin.getline(buffer, sizeof(buffer));
+            second = MyString(buffer); 
             str = str + second;
+            std::cout << "Ð’Ñ‚Ð¾Ñ€Ð°Ñ ÑÑ‚Ñ€Ð¾ÐºÐ° Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð°.\n";
             break;
         }
         case 5:
-            std::cout << "Òåêóùàÿ ñòðîêà: " << str << "\n";
-            Sleep(1200);
             break;
         case 0:
-            std::cout << "Âûõîä...\n";
+            std::cout << "Ð’Ñ‹Ñ…Ð¾Ð´...\n";
             break;
         default:
-            std::cout << "Íåâåðíûé âûáîð.\n";
+            std::cout << "ÐÐµÐ²ÐµÑ€Ð½Ñ‹Ð¹ Ð²Ñ‹Ð±Ð¾Ñ€. ÐŸÐ¾Ð¶Ð°Ð»ÑƒÐ¹ÑÑ‚Ð°, Ð¿Ð¾Ð¿Ñ€Ð¾Ð±ÑƒÐ¹Ñ‚Ðµ ÑÐ½Ð¾Ð²Ð°.\n";
+            Sleep(1000);
+        }
+        if (choice != 0 && choice != 5) {
             Sleep(1000);
         }
     } while (choice != 0);
